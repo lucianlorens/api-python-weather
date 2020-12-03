@@ -14,7 +14,8 @@ SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'lorens-api-weather.herokuapp.com',
+    '.herokuapp.com',
+    '127.0.0.1',
     ]
 
 
