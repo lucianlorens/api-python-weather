@@ -11,6 +11,12 @@ services:
       API: "http://api:5000/"
     networks:
       - api_weather
+    depends_on: 
+      - database
+  database:
+    image: postgresql
+    ports:
+      - 5432:5432
 
 networks:
   api_weather:

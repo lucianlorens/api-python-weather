@@ -1,9 +1,15 @@
 from django.shortcuts import render
 
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from rest_framework import permissions
-from api_weather.control_panel.serializers import UserSerializer, GroupSerializer
+
+from rest_framework import viewsets, permissions
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+from api_weather.control_panel.serializers import UserSerializer, GroupSerializer, LocationSerializer
+
+from api_weather.control_panel.models import Location
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -21,3 +27,9 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+@api_view(['GET'])
+def locationList(request):
+    locations = Location.objects.all()
+    serializer = LocationSerializer(locations, many=True)
+    return Response(serializer.data)
