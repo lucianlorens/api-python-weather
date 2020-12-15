@@ -14,8 +14,9 @@ SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '.herokuapp.com',
+    '.herokuapp.com', # using Python 3.7+ you can use this config
     '127.0.0.1',
+    'localhost',
     ]
 
 
@@ -65,12 +66,39 @@ WSGI_APPLICATION = 'api_weather.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# Connecting with Heroku PostgreSQL
+# https://devcenter.heroku.com/articles/python-concurrency-and-database-connections
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+from dotenv import load_dotenv
+from pathlib import Path 
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path, verbose=True)
+
+on_cloud = os.getenv("ON_CLOUD")
+postgres_user = os.getenv("POSTGRES_USER")
+postgres_pass = os.getenv("POSTGRES_PASS")
+postgres_host = os.getenv("POSTGRES_HOST")
+postgres_port = os.getenv("POSTGRES_PORT")
+postgres_database = os.getenv("POSTGRES_DATABASE")
+
+if on_cloud:
+    print("deployment on production")
+    database_url = os.getenv("DATABASE_URL")
+else:
+    database_url = f'postgresql://{postgres_user}:{postgres_pass}@{postgres_host}:{postgres_port}/{postgres_database}'
+    
+import dj_database_url
+
+DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
+
 
 
 # Password validation
