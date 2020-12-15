@@ -3,10 +3,12 @@ Weather API made with Python, Django Rest Framework and ClimaCell API.
 
 ### Prerequisites
 
-Python installed;
+* Python installed;
+* PostgreSQL 13 installed;
 (optional) Docker installed.
 
 [wip]
+
 
 ## Getting Started
 
@@ -19,14 +21,19 @@ Linux:
 `source activate env_django` 
 
 Windows:
-`env\Scripts\activate`
+`env_django\Scripts\activate`
 
 then install the dependencies using 
 `pip install requirements.txt`
 
-Other way:
-Using docker do a `docker-compose up` in the root folder of the project.
+To run the application use:
+`python manage.py runserver`
 
+If you made any changes to the application you can use:
+`python manage.py migrate` to make database migrations 
+
+Alternative way:
+Using docker do a `docker-compose up` in the root folder of the project.
 
 [wip]
 
@@ -51,10 +58,10 @@ Using docker do a `docker-compose up` in the root folder of the project.
 
 [wip]
 
+
 ## Deployment
 
 You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://devcenter.heroku.com/articles/pipelines)
-
 
 [wip]
 
@@ -75,7 +82,6 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 ## Authors
 
 * **Lucian Lorens** - *Initial work* - [lucianlorens](https://github.com/lucianlorens)
-
 
 ## License
 
