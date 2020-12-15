@@ -4,3 +4,4 @@
 .ipynb_checkpoints/
 db.sqlite3
 env_django/
+.vscode/
