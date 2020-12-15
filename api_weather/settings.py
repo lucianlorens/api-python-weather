@@ -31,7 +31,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api_weather',
-    'api_weather.control_panel'
+    'api_weather.control_panel',
+    'drf_yasg', #https://drf-yasg.readthedocs.io/en/stable/readme.html
+
 ]
 
 MIDDLEWARE = [
@@ -137,7 +139,8 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+
 }
 
 # Static files (CSS, JavaScript, Images)

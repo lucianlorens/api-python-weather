@@ -7,13 +7,11 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 #router.register(r'status', views.StatusViewSet)
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
     path('locations/', views.locations_list, name='locations'),
     path('locations/<int:pk>', views.locations_detail, name='locations_detail'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))#,
-    #path('status/', include())
-
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),    
+    #path('status/', include()),
+    
 ]
