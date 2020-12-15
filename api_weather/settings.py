@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'control_panel',
+    'api_weather',
+    'api_weather.control_panel'
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,7 @@ postgres_host = os.getenv("POSTGRES_HOST")
 postgres_port = os.getenv("POSTGRES_PORT")
 postgres_database = os.getenv("POSTGRES_DATABASE")
 
-if on_cloud:
+if on_cloud == True:
     print("deployment on production")
     database_url = os.getenv("DATABASE_URL")
 else:
