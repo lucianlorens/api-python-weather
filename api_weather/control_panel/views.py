@@ -64,3 +64,35 @@ def locations_detail(request, pk):
     elif request.method == 'DELETE':
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+###########################################################################
+
+@api_view(['GET', 'POST'])
+def parameters_list(request, location_pk):
+    if request.method == 'GET':
+        parameters = Parameter.objects.get(pk=location_pk)
+        serializer = ParameterSerializer(locations, many=True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        serializer = ParameterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'DELETE'])
+def parameters_detail(request, location_pk, parameter_pk):
+
+    try:
+        parameter = Parameter.objects.get(pk=parameter_pk)
+    except Parameter.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = ParameterSerializer(location)
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+        parameter.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

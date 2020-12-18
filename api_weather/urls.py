@@ -11,7 +11,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('locations/', views.locations_list, name='locations'),
     path('locations/<int:pk>', views.locations_detail, name='locations_detail'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),    
+    path('locations/<int:location_pk>/parameters/', views.parameters_list, name = 'parameters')),
+    path('locations/<int:location_pk>/parameters/<int:parameter_pk>', views.parameters_detail, name = 'parameters_detail'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #path('status/', include()),
     
 ]
