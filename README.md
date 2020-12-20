@@ -24,7 +24,7 @@ Windows:
 `env_django\Scripts\activate`
 
 then install the dependencies using 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 To run the application use:
 `python manage.py runserver`
