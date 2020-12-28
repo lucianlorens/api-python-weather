@@ -16,6 +16,12 @@ from pathlib import Path
 import json
 from datetime import datetime
 
+import handlers.climacell as climacell
+
+import handlers.aggregation as aggregator
+
+import requests
+
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path, verbose=True)
@@ -29,7 +35,7 @@ def locations_list(request):
         return Response(serializer.data)
     
     elif request.method == 'POST':
-        request.data.update( { 'created_at':datetime.now() } )
+        request.data['created_at'] = datetime.now() 
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -49,7 +55,32 @@ def locations_detail(request, pk):
     if request.method == 'GET':
         
         serializer = LocationSerializer(location)
-        # TODO: add climacell data
+        
+        #### WIP
+        parameters_urls = serializer.data['parameters_urls']
+        
+        for parameter_url in parameters_urls:
+            parameters_response = requests.get('parameters_urls')
+        
+        ####
+
+        latitude = location_serializer.data['latitude']
+        longitude = location_serializer.data['longitude']
+        
+        parameters_dict = {}
+
+        for parameter in parameters_response.body:
+            parameters_dict[ parameter['name'] ] : parameter['climacell_type']
+
+
+        climacell_data = climacell.get_climacell_data(latitude, longitude, parameters_type_list)
+
+
+        # TODO: add aggregated climacell data
+        for key in parameters_dict.keys():
+            aggregator.metric_aggregation(key, parameters_dict[key], climacell_data)
+
+
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
@@ -76,7 +107,7 @@ def parameters_list(request, location_pk):
         return Response(serializer.data)
     
     elif request.method == 'POST':
-        request.data['updated_at'] = datetime.now() 
+        request.data['created_at'] = datetime.now() 
         serializer = ParameterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -95,9 +126,22 @@ def parameters_detail(request, location_pk, parameter_pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = ParameterSerializer(parameter)
-        # TODO: add climacell data
-        return Response(serializer.data)
+        parameter_serializer = ParameterSerializer(parameter)
+        location_serializer = LocationSerializer(location)
+        
+        latitude = location_serializer.data['latitude']
+        longitude = location_serializer.data['longitude']
+        metric_type = parameter_serializer.data['climacell_type']
+        
+        climacell_data = climacell.get_climacell_data(latitude, longitude, metric_type)
+        
+        metric_name = parameter_serializer.data['name']
+        parameter_aggregation = aggregator.metric_aggregation(metric_name, metric_type, climacell_data)
+
+        parameter_serializer.data['aggregation'] = parameter_aggregation
+        parameter_serializer.data['values'] = climacell_data
+
+        return Response(parameter_serializer.data)
 
     elif request.method == 'DELETE':
         parameter.delete()

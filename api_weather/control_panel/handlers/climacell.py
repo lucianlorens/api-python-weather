@@ -15,7 +15,7 @@ API_KEY = os.getenv("WEATHER_API_KEY")
 
 url = "https://api.climacell.co/v3/weather/historical/station"
 
-def get_climacell_data(latitude,longitude, fields_list ):
+def get_climacell_data(latitude, longitude, fields_list):
 	
 	fields_string = ','.join(fields_list)
 
