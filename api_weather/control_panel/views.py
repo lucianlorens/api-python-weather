@@ -57,30 +57,28 @@ def locations_detail(request, pk):
         serializer = LocationSerializer(location)
         
         #### WIP
-        parameters_urls = serializer.data['parameters_urls']
+        parameters_url = serializer.data['parameters_url']
         
-        for parameter_url in parameters_urls:
-            parameters_response = requests.get('parameters_urls')
+        parameters_response = requests.get(parameters_url)
         
-        ####
+        parameters_body_json = json.loads(parameters_response.text)
+
+        parameters_dict = {}
+
+        for parameter in parameters_body_json:
+            parameters_dict[ parameter['name'] ] : parameter['climacell_type']
 
         latitude = location_serializer.data['latitude']
         longitude = location_serializer.data['longitude']
-        
-        parameters_dict = {}
-
-        for parameter in parameters_response.body:
-            parameters_dict[ parameter['name'] ] : parameter['climacell_type']
-
 
         climacell_data = climacell.get_climacell_data(latitude, longitude, parameters_type_list)
 
-
-        # TODO: add aggregated climacell data
+        aggregation_dict = {}
         for key in parameters_dict.keys():
-            aggregator.metric_aggregation(key, parameters_dict[key], climacell_data)
+            aggregation_dict[key].append( aggregator.metric_aggregation(key, parameters_dict[key], climacell_data) )
 
-
+        serializer.data['Aggregation'] = aggregation_dict
+        
         return Response(serializer.data)
 
     elif request.method == 'PATCH':

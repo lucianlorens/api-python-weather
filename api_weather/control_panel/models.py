@@ -7,7 +7,7 @@ class Location(models.Model):
     longitude = models.CharField(max_length=30)
     created_at = models.DateTimeField(blank=True)
     updated_at = models.DateTimeField(blank=True)
-    parameters_urls = models.JSONField(blank=True)
+    parameters_url = models.TextField(blank=True)
     # aggregation = models.JSONField() # retrieved from parameters
     # details = models.JSONField() # retrieved from parameters
 
