@@ -77,7 +77,13 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 
 ## Versioning
 
-[wip]
+
+#### Branches
+* Production: main
+* Development: dev 
+
+#### Commit Pattern:
+Using https://gitmoji.dev/ emoji pattern to easy find commits topics
 
 ## Authors
 
@@ -89,4 +95,4 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 
 ## Acknowledgments
 
-[wip]
+To my Family, ever helping, ever supporting.

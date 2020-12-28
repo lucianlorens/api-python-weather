@@ -42,11 +42,14 @@ def locations_detail(request, pk):
 
     try:
         location = Location.objects.get(pk=pk)
+
     except Location.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        
         serializer = LocationSerializer(location)
+        # TODO: add climacell data
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
@@ -68,7 +71,7 @@ def locations_detail(request, pk):
 @api_view(['GET', 'POST'])
 def parameters_list(request, location_pk):
     if request.method == 'GET':
-        parameters = Parameter.objects.get(pk=location_pk)
+        parameters = Parameter.objects.get(location_id=location_pk)
         serializer = ParameterSerializer(locations, many=True)
         return Response(serializer.data)
     
@@ -90,7 +93,8 @@ def parameters_detail(request, location_pk, parameter_pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = ParameterSerializer(location)
+        serializer = ParameterSerializer(parameter)
+        # TODO: add climacell data
         return Response(serializer.data)
 
     elif request.method == 'DELETE':
