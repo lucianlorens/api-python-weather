@@ -16,9 +16,9 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-import handlers.climacell as climacell
+import api_weather.control_panel.handlers.climacell as climacell
 
-import handlers.aggregation as aggregator
+import api_weather.control_panel.handlers.aggregation as aggregator
 
 import requests
 
@@ -78,7 +78,7 @@ def locations_detail(request, pk):
             aggregation_dict[key].append( aggregator.metric_aggregation(key, parameters_dict[key], climacell_data) )
 
         serializer.data['Aggregation'] = aggregation_dict
-        
+
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
@@ -120,7 +120,7 @@ def parameters_detail(request, location_pk, parameter_pk):
         parameter = Parameter.objects.get(pk=parameter_pk)
         location = Location.objects.get(pk=location_pk)
 
-    except Parameter.DoesNotExist, Location.DoesNotExist:
+    except (Parameter.DoesNotExist, Location.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':

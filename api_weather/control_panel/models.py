@@ -16,7 +16,7 @@ class Parameter(models.Model):
     climacell_type = models.CharField(max_length=30)
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
     location_url = models.CharField(max_length=30)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(blank=True)
     # measurement_unit = models.CharField(max_length=30) # retrieved by request
     # values = models.JSONField() #retrieved by request, filter by type
     # aggregation = models.JSONField() #retrieved by request, filter by type
