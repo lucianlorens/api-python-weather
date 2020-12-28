@@ -7,3 +7,4 @@ env_django/
 .vscode/
 *migrations/
 __pycache__/
+scripts

@@ -54,39 +54,57 @@ def locations_detail(request, pk):
 
     if request.method == 'GET':
         
-        serializer = LocationSerializer(location)
+        location_serializer = LocationSerializer(location)
         
-        parameters_url = serializer.data['parameters_url']
+        parameters_url = location_serializer.data['parameters_url']
         
-        parameters_response = requests.get(parameters_url)
+        parameters_response = requests.get("http://"+parameters_url)
         
         parameters_body_json = json.loads(parameters_response.text)
 
         parameters_dict = {}
+        parameters_name_list = [i["name"] for i in parameters_body_json]
+
 
         for parameter in parameters_body_json:
             parameters_dict[ parameter['name'] ] : parameter['climacell_type']
 
         latitude = location_serializer.data['latitude']
         longitude = location_serializer.data['longitude']
-
+        
+        parameters_type_list = [i["climacell_type"] for i in parameters_body_json]
         climacell_data = climacell.get_climacell_data(latitude, longitude, parameters_type_list)
 
-        aggregation_dict = {}
-        for key in parameters_dict.keys():
-            aggregation_dict[key].append( aggregator.metric_aggregation(key, parameters_dict[key], climacell_data) )
 
-        serializer.data['aggregation'] = aggregation_dict
+        aggregation_list = []
 
-        return Response(serializer.data)
+        print(" this is parameters_dict")
+        print(parameters_name_list)
+        print( parameters_dict.keys() )
+
+        for parameter in parameters_body_json:
+            aggregation_list.append( aggregator.metric_aggregation(parameter["name"], parameter["climacell_type"], climacell_data) )
+        
+        print("AGGREGATION list")
+        print(aggregation_list)
+
+        # location_serializer.data['aggregation'] = aggregation_dict
+
+        location_response = location_serializer.data
+
+        location_response.update({
+        "aggregation" : aggregation_list
+        })
+
+        return Response(location_response)
 
     elif request.method == 'PATCH':
         request.data['updated_at'] = datetime.now() 
-        serializer = LocationSerializer(location, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        location_serializer = LocationSerializer(location, data=request.data)
+        if location_serializer.is_valid():
+            location_serializer.save()
+            return Response(location_serializer.data)
+        return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         location.delete()
