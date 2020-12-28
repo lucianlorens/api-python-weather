@@ -10,23 +10,12 @@ from api_weather.control_panel.serializers import UserSerializer, GroupSerialize
 
 from api_weather.control_panel.models import Location
 
+from dotenv import load_dotenv
+from pathlib import Path 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path, verbose=True)
 
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 @api_view(['GET', 'POST'])
 def locations_list(request):
@@ -41,6 +30,7 @@ def locations_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def locations_detail(request, pk):
@@ -65,7 +55,9 @@ def locations_detail(request, pk):
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 ###########################################################################
+
 
 @api_view(['GET', 'POST'])
 def parameters_list(request, location_pk):
@@ -80,6 +72,7 @@ def parameters_list(request, location_pk):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'DELETE'])
 def parameters_detail(request, location_pk, parameter_pk):
@@ -96,3 +89,26 @@ def parameters_detail(request, location_pk, parameter_pk):
     elif request.method == 'DELETE':
         parameter.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+###########################################################################
+
+
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]

@@ -73,12 +73,6 @@ WSGI_APPLICATION = 'api_weather.wsgi.application'
 # Connecting with Heroku PostgreSQL
 # https://devcenter.heroku.com/articles/python-concurrency-and-database-connections
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 from dotenv import load_dotenv
 from pathlib import Path 
@@ -93,17 +87,23 @@ postgres_host = os.getenv("POSTGRES_HOST")
 postgres_port = os.getenv("POSTGRES_PORT")
 postgres_database = os.getenv("POSTGRES_DATABASE")
 
+import dj_database_url
+
+
 if on_cloud == True:
     print("deployment on production")
     database_url = os.getenv("DATABASE_URL")
+    DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
+
 else:
-    database_url = f'postgresql://{postgres_user}:{postgres_pass}@{postgres_host}:{postgres_port}/{postgres_database}'
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    #database_url = f'postgresql://{postgres_user}:{postgres_pass}@{postgres_host}:{postgres_port}/{postgres_database}'
     
-import dj_database_url
-
-DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
