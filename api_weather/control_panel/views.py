@@ -53,7 +53,7 @@ def locations_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
-        request.data.update( { 'updated_at':datetime.now() } )
+        request.data['updated_at'] = datetime.now() 
         serializer = LocationSerializer(location, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -72,11 +72,11 @@ def locations_detail(request, pk):
 def parameters_list(request, location_pk):
     if request.method == 'GET':
         parameters = Parameter.objects.get(location_id=location_pk)
-        serializer = ParameterSerializer(locations, many=True)
+        serializer = ParameterSerializer(parameters, many=True)
         return Response(serializer.data)
     
     elif request.method == 'POST':
-        request.data.update( { 'created_at':datetime.now() } )
+        request.data['updated_at'] = datetime.now() 
         serializer = ParameterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -89,7 +89,9 @@ def parameters_detail(request, location_pk, parameter_pk):
 
     try:
         parameter = Parameter.objects.get(pk=parameter_pk)
-    except Parameter.DoesNotExist:
+        location = Location.objects.get(pk=location_pk)
+
+    except Parameter.DoesNotExist, Location.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
