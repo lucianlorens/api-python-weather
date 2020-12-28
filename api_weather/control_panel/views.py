@@ -6,9 +6,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from api_weather.control_panel.serializers import UserSerializer, GroupSerializer, LocationSerializer
+from api_weather.control_panel.serializers import UserSerializer, GroupSerializer, LocationSerializer, ParameterSerializer
 
-from api_weather.control_panel.models import Location
+from api_weather.control_panel.models import Location, Parameter
 
 from dotenv import load_dotenv
 from pathlib import Path 
@@ -56,7 +56,6 @@ def locations_detail(request, pk):
         
         serializer = LocationSerializer(location)
         
-        #### WIP
         parameters_url = serializer.data['parameters_url']
         
         parameters_response = requests.get(parameters_url)
@@ -77,7 +76,7 @@ def locations_detail(request, pk):
         for key in parameters_dict.keys():
             aggregation_dict[key].append( aggregator.metric_aggregation(key, parameters_dict[key], climacell_data) )
 
-        serializer.data['Aggregation'] = aggregation_dict
+        serializer.data['aggregation'] = aggregation_dict
 
         return Response(serializer.data)
 
@@ -100,12 +99,16 @@ def locations_detail(request, pk):
 @api_view(['GET', 'POST'])
 def parameters_list(request, location_pk):
     if request.method == 'GET':
-        parameters = Parameter.objects.get(location_id=location_pk)
-        serializer = ParameterSerializer(parameters, many=True)
-        return Response(serializer.data)
-    
+        try:
+            parameters = Parameter.objects.filter(location_id=location_pk)
+            serializer = ParameterSerializer(parameters, many=True)
+            return Response(serializer.data)
+        except Parameter.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
     elif request.method == 'POST':
-        request.data['created_at'] = datetime.now() 
+        request.data['created_at'] = datetime.now()
+        request.data['location_id'] = location_pk
         serializer = ParameterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -129,17 +132,21 @@ def parameters_detail(request, location_pk, parameter_pk):
         
         latitude = location_serializer.data['latitude']
         longitude = location_serializer.data['longitude']
+
         metric_type = parameter_serializer.data['climacell_type']
         
-        climacell_data = climacell.get_climacell_data(latitude, longitude, metric_type)
+        climacell_data = climacell.get_climacell_data(latitude, longitude, metric_type )
         
         metric_name = parameter_serializer.data['name']
         parameter_aggregation = aggregator.metric_aggregation(metric_name, metric_type, climacell_data)
 
-        parameter_serializer.data['aggregation'] = parameter_aggregation
-        parameter_serializer.data['values'] = climacell_data
+        parameter_response = parameter_serializer.data
 
-        return Response(parameter_serializer.data)
+        parameter_response.update({
+        "aggregation" : parameter_aggregation,
+        "values" : climacell_data
+        })
+        return Response(parameter_response)
 
     elif request.method == 'DELETE':
         parameter.delete()

@@ -30,7 +30,8 @@ To run the application use:
 `python manage.py runserver`
 
 If you made any changes to the application you can use:
-`python manage.py migrate` to make database migrations 
+`python manage.py makemigrations` to make database migrations and use `python manage.py migrate --run-syncdb` to execute your database migrations.
+
 
 Alternative way:
 Using docker do a `docker-compose up` in the root folder of the project.

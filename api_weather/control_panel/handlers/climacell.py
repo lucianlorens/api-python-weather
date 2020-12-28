@@ -16,9 +16,12 @@ API_KEY = os.getenv("WEATHER_API_KEY")
 url = "https://api.climacell.co/v3/weather/historical/station"
 
 def get_climacell_data(latitude, longitude, fields_list):
-	
-	fields_string = ','.join(fields_list)
+	if isinstance(fields_list, list):
+		fields_string = ','.join(fields_list)
+	else:
+		fields_string = fields_list
 
+	print("Climacell fields_string is: "+fields_string)
 	from datetime import datetime, timedelta
 
 	now = datetime.now().replace(microsecond=0)

@@ -20,7 +20,7 @@ def temperature_aggregation(json_data):
 def windspeed_aggregation(json_data):
 	wind_list = []
 	for datapoint in json_data:
-		wind_list.append(datapoint['wind_speed']['value'])
+		wind_list.append( datapoint['wind_speed']['value'] )
 		windspeed_unit = datapoint["wind_speed"]['units']
 
 	average_wind = round( (sum(wind_list) / len(wind_list) ) ,2 )
@@ -37,6 +37,10 @@ def windspeed_aggregation(json_data):
 
 def metric_aggregation(metric_name, metric_type, json_data):
 	metric_list = []
+	
+	print("agg name:" + metric_name)
+	print("agg type:"+metric_type)
+	print(json_data)
 
 	for datapoint in json_data:
 		metric_list.append( datapoint[metric_type]['value'] )
