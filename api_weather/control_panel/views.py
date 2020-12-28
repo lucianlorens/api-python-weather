@@ -13,6 +13,10 @@ from api_weather.control_panel.models import Location
 from dotenv import load_dotenv
 from pathlib import Path 
 
+import json
+from datetime import datetime
+
+
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path, verbose=True)
 
@@ -25,6 +29,7 @@ def locations_list(request):
         return Response(serializer.data)
     
     elif request.method == 'POST':
+        request.data.update( { 'created_at':datetime.now() } )
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -45,6 +50,7 @@ def locations_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PATCH':
+        request.data.update( { 'updated_at':datetime.now() } )
         serializer = LocationSerializer(location, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -67,6 +73,7 @@ def parameters_list(request, location_pk):
         return Response(serializer.data)
     
     elif request.method == 'POST':
+        request.data.update( { 'created_at':datetime.now() } )
         serializer = ParameterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
