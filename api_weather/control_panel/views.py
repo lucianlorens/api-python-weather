@@ -53,7 +53,11 @@ def locations_detail(request, pk):
         
         parameters_url = location_serializer.data['parameters_url']
         
-        parameters_body_json = Parameter.objects.filter(location_id=location_pk)
+        parameter_objects = Parameter.objects.filter(location_id=pk)
+
+        parameter_serializer = ParameterSerializer(parameter_objects, many=True)
+
+        parameters_body_json = parameter_serializer.data
 
 
         # parameters_response = requests.get(parameters_url)
