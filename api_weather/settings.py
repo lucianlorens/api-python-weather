@@ -7,11 +7,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+
+from dotenv import load_dotenv
+from pathlib import Path 
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path, verbose=True)
+
+on_cloud = os.getenv("ON_CLOUD")
+postgres_user = os.getenv("POSTGRES_USER")
+postgres_pass = os.getenv("POSTGRES_PASS")
+postgres_host = os.getenv("POSTGRES_HOST")
+postgres_port = os.getenv("POSTGRES_PORT")
+postgres_database = os.getenv("POSTGRES_DATABASE")
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+if on_cloud == True:
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     '.herokuapp.com', # using Python 3.7+ you can use this config
@@ -31,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api_weather',
-    'api_weather.control_panel'
+    'api_weather.control_panel',
+    'drf_yasg', #https://drf-yasg.readthedocs.io/en/stable/readme.html
+
 ]
 
 MIDDLEWARE = [
@@ -71,37 +91,25 @@ WSGI_APPLICATION = 'api_weather.wsgi.application'
 # Connecting with Heroku PostgreSQL
 # https://devcenter.heroku.com/articles/python-concurrency-and-database-connections
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
-from dotenv import load_dotenv
-from pathlib import Path 
 
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path, verbose=True)
+import dj_database_url
 
-on_cloud = os.getenv("ON_CLOUD")
-postgres_user = os.getenv("POSTGRES_USER")
-postgres_pass = os.getenv("POSTGRES_PASS")
-postgres_host = os.getenv("POSTGRES_HOST")
-postgres_port = os.getenv("POSTGRES_PORT")
-postgres_database = os.getenv("POSTGRES_DATABASE")
 
 if on_cloud == True:
     print("deployment on production")
     database_url = os.getenv("DATABASE_URL")
+    DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
+
 else:
-    database_url = f'postgresql://{postgres_user}:{postgres_pass}@{postgres_host}:{postgres_port}/{postgres_database}'
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    #database_url = f'postgresql://{postgres_user}:{postgres_pass}@{postgres_host}:{postgres_port}/{postgres_database}'
     
-import dj_database_url
-
-DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -137,7 +145,8 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+
 }
 
 # Static files (CSS, JavaScript, Images)

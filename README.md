@@ -24,13 +24,14 @@ Windows:
 `env_django\Scripts\activate`
 
 then install the dependencies using 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 To run the application use:
 `python manage.py runserver`
 
 If you made any changes to the application you can use:
-`python manage.py migrate` to make database migrations 
+`python manage.py makemigrations` to make database migrations and use `python manage.py migrate --run-syncdb` to execute your database migrations.
+
 
 Alternative way:
 Using docker do a `docker-compose up` in the root folder of the project.
@@ -77,7 +78,13 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 
 ## Versioning
 
-[wip]
+
+#### Branches
+* Production: main
+* Development: dev 
+
+#### Commit Pattern:
+Using https://gitmoji.dev/ emoji pattern to easy find commits topics
 
 ## Authors
 
@@ -89,4 +96,4 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 
 ## Acknowledgments
 
-[wip]
+To my Family, ever helping, ever supporting.
