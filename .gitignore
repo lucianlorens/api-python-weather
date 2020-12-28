@@ -5,6 +5,6 @@
 db.sqlite3
 env_django/
 .vscode/
-#migrations/
+migrations/
 __pycache__/
 scripts
