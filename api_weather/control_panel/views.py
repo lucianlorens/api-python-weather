@@ -7,39 +7,34 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from api_weather.control_panel.serializers import UserSerializer, GroupSerializer, LocationSerializer, ParameterSerializer
-
 from api_weather.control_panel.models import Location, Parameter
 
-from dotenv import load_dotenv
-from pathlib import Path 
-
-import json
-from datetime import datetime
-
 import api_weather.control_panel.handlers.climacell as climacell
-
 import api_weather.control_panel.handlers.aggregation as aggregator
 
 import requests
-
-
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path, verbose=True)
+import json
+from datetime import datetime
 
 
 @api_view(['GET', 'POST'])
 def locations_list(request):
+    
     if request.method == 'GET':
+        
         locations = Location.objects.all()
         serializer = LocationSerializer(locations, many=True)
         return Response(serializer.data)
     
     elif request.method == 'POST':
+        
         request.data['created_at'] = datetime.now() 
         serializer = LocationSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -85,9 +80,11 @@ def locations_detail(request, pk):
     elif request.method == 'PATCH':
         request.data['updated_at'] = datetime.now() 
         location_serializer = LocationSerializer(location, data=request.data)
+
         if location_serializer.is_valid():
             location_serializer.save()
             return Response(location_serializer.data)
+
         return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
@@ -100,6 +97,7 @@ def locations_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def parameters_list(request, location_pk):
+    
     if request.method == 'GET':
         try:
             parameters = Parameter.objects.filter(location_id=location_pk)
@@ -112,9 +110,11 @@ def parameters_list(request, location_pk):
         request.data['created_at'] = datetime.now()
         request.data['location_id'] = location_pk
         serializer = ParameterSerializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -148,7 +148,7 @@ def parameters_detail(request, location_pk, parameter_pk):
         "aggregation" : parameter_aggregation,
         "values" : climacell_data
         })
-        
+
         return Response(parameter_response)
 
     elif request.method == 'DELETE':

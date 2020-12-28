@@ -26,7 +26,7 @@ SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-if on_cloud == True:
+if on_cloud == 'True':
     DEBUG = False
 else:
     DEBUG = True
@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'api_weather.wsgi.application'
 import dj_database_url
 
 
-if on_cloud == True:
+if on_cloud == 'True':
     print("deployment on production")
     database_url = os.getenv("DATABASE_URL")
     DATABASES = {'default': dj_database_url.config(default=database_url, conn_max_age=600)}
