@@ -71,6 +71,7 @@ You can deploy with Heroku as it is using [Heroku Deployment pipelines](https://
 * [Heroku](https://www.heroku.com) - is a platform as a service (PaaS) that enables developers to build, run, and operate applications entirely in the cloud.
 * [Django Rest Framework](https://www.django-rest-framework.org/) - Django REST framework is a powerful and flexible toolkit for building Web APIs.
 * [ClimaCell Weather API](https://www.climacell.co/weather-api/) - The world's best hyperlocal weather API — real-time and historical weather data, customizable for every use case and business model.
+** For additional information checkout the official documentation from Climacell API at https://developer.climacell.co/v3/docs/historical
 * [PostgreSQL](https://www.postgresql.org/) - is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance. 
 
 ## Contributing

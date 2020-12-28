@@ -53,9 +53,12 @@ def locations_detail(request, pk):
         
         parameters_url = location_serializer.data['parameters_url']
         
-        parameters_response = requests.get("http://"+parameters_url)
+        parameters_body_json = Parameter.objects.filter(location_id=location_pk)
+
+
+        # parameters_response = requests.get(parameters_url)
         
-        parameters_body_json = json.loads(parameters_response.text)
+        # parameters_body_json = json.loads(parameters_response.text)
 
         latitude = location_serializer.data['latitude']
         longitude = location_serializer.data['longitude']
