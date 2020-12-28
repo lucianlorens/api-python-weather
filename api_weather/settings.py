@@ -15,11 +15,6 @@ env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path, verbose=True)
 
 on_cloud = os.getenv("ON_CLOUD")
-postgres_user = os.getenv("POSTGRES_USER")
-postgres_pass = os.getenv("POSTGRES_PASS")
-postgres_host = os.getenv("POSTGRES_HOST")
-postgres_port = os.getenv("POSTGRES_PORT")
-postgres_database = os.getenv("POSTGRES_DATABASE")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
@@ -27,7 +22,7 @@ SECRET_KEY = ')^j-yg_z-c#lss@-(bh*=()+cske+afg0(v3wjn&#d=tko8s&p'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 if on_cloud == 'True':
-    DEBUG = False
+    DEBUG = True
 else:
     DEBUG = True
 
