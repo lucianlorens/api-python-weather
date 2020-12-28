@@ -62,33 +62,17 @@ def locations_detail(request, pk):
         
         parameters_body_json = json.loads(parameters_response.text)
 
-        parameters_dict = {}
-        parameters_name_list = [i["name"] for i in parameters_body_json]
-
-
-        for parameter in parameters_body_json:
-            parameters_dict[ parameter['name'] ] : parameter['climacell_type']
-
         latitude = location_serializer.data['latitude']
         longitude = location_serializer.data['longitude']
-        
-        parameters_type_list = [i["climacell_type"] for i in parameters_body_json]
-        climacell_data = climacell.get_climacell_data(latitude, longitude, parameters_type_list)
 
+        parameters_type_list = [i["climacell_type"] for i in parameters_body_json]
+
+        climacell_data = climacell.get_climacell_data(latitude, longitude, parameters_type_list)
 
         aggregation_list = []
 
-        print(" this is parameters_dict")
-        print(parameters_name_list)
-        print( parameters_dict.keys() )
-
         for parameter in parameters_body_json:
             aggregation_list.append( aggregator.metric_aggregation(parameter["name"], parameter["climacell_type"], climacell_data) )
-        
-        print("AGGREGATION list")
-        print(aggregation_list)
-
-        # location_serializer.data['aggregation'] = aggregation_dict
 
         location_response = location_serializer.data
 
@@ -164,6 +148,7 @@ def parameters_detail(request, location_pk, parameter_pk):
         "aggregation" : parameter_aggregation,
         "values" : climacell_data
         })
+        
         return Response(parameter_response)
 
     elif request.method == 'DELETE':
