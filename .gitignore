@@ -8,3 +8,5 @@ env_django/
 #migrations/
 __pycache__/
 scripts
+venv/
+.idea/
